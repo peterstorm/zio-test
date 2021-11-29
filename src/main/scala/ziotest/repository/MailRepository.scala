@@ -13,7 +13,7 @@ object MailRepository:
 
     def getMailContent(mailMessage: MailMessage): Task[List[MailContent]]
 
-    def commitMailMessagesSent(mailMessage: MailMessage, requestId: String): Task[Unit]
+    def commitMailMessageSent(mailMessage: MailMessage, requestId: String): Task[Unit]
 
     def setMailMessageError(mailMessage: MailMessage, error: String): Task[Unit]
 
@@ -23,7 +23,7 @@ object MailRepository:
   def getMailContent(mailMessage: MailMessage): RIO[MailRepository, List[MailContent]] = 
     RIO.accessM(_.get.getMailContent(mailMessage))
 
-  def commitMailMessagesSent(mailMessage: MailMessage, requestId: String): RIO[MailRepository, Unit] = 
+  def commitMailMessageSent(mailMessage: MailMessage, requestId: String): RIO[MailRepository, Unit] = 
     RIO.accessM(_.get.commitMailMessagesSent(mailMessage, requestId))
 
   def setMailMessageError(mailMessage: MailMessage, error: String): RIO[MailRepository, Unit] = 

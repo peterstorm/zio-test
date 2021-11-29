@@ -1,27 +1,24 @@
-package ziotest.service
+package ziotest.services
 
-import zio.{Has, RIO}
+import zio.{Has, RIO, ZIO, Task}
 import ziotest.repository.MailRepository.MailRepository
 import ziotest.domain.mail._
-import zio.logging.Logging
+
+trait MailService:
+
+  def getPendingMails: Task[List[Mail]]
+
+  def commitMailMessageSent(mailMessage: MailMessage, requestId: String): Task[Unit]
+
+  def setMailMessageError(mailMessage: MailMessage, error: String): Task[Unit]
 
 object MailService:
 
-  type MailService = Has[MailService.Service with Logging]
+  def getPendingMails = 
+    ZIO.serviceWith[MailService](_.getPendingMails)
 
-  trait Service:
+  def commitMailMessageSent(mailMessage: MailMessage, requestId: String) =
+    ZIO.serviceWith[MailService](_.commitMailMessageSent(mailMessage, requestId))
 
-    def getPendingMails: RIO[MailRepository, List[Mail]]
-
-    def commitMailMessagesSent(mailMessage: MailMessage, requestId: String): RIO[MailRepository, Unit]
-
-    def setMailMessageError(mailMessage: MailMessage, error: String): RIO[MailRepository, Unit]
-
-  def getPendingMails: RIO[MailService with MailRepository, List[Mail]] =
-    RIO.accessM(_.get.getPendingMails)
-
-  def commitMailMessagesSent(mailMessage: MailMessage, requestId: String): RIO[MailService with MailRepository, Unit] =
-    RIO.accessM(_.get.commitMailMessagesSent(mailMessage, requestId))
-
-  def setMailMessageError(mailMessage: MailMessage, error: String): RIO[MailService with MailRepository, Unit] =
-    RIO.accessM(_.get.setMailMessageError(mailMessage, error))
+  def setMailMessageError(mailMessage: MailMessage, error: String) =
+    ZIO.serviceWith[MailService](_.setMailMessageError(mailMessage, error))

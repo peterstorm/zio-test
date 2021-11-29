@@ -14,27 +14,27 @@ object Database:
   type Database = Has[Transactor[Task]]
 
   private def makeTransactor(
-    config: DatabaseConfig.Config,
+    config: AppConfig.Config,
     conExContext: ExecutionContext
   ): Managed[Throwable, Transactor[Task]] =
     HikariTransactor
       .newHikariTransactor[Task](
-        config.driver,
-        config.url,
-        config.username,
-        config.password,
+        config.database.driver,
+        config.database.url,
+        config.database.username,
+        config.database.password,
         conExContext
       )
       .toManagedZIO
 
-  val managedTransactor: ZManaged[DatabaseConfig, Throwable, Transactor[Task]] =
+  val managedTransactor: ZManaged[AppConfig, Throwable, Transactor[Task]] =
     for
-      config <- getDatabaseConfig.toManaged_
+      config <- getAppConfig.toManaged_
       conExContext <- ExecutionContexts.fixedThreadPool[Task](32).toManagedZIO
       transactor <- makeTransactor(config, conExContext)
     yield transactor
 
-  val live: ZLayer[DatabaseConfig, Throwable, Database] =
+  val live: ZLayer[AppConfig, Throwable, Database] =
     ZLayer.fromManaged(managedTransactor)
 
   val transactor: URIO[Database, Transactor[Task]] = ZIO.service

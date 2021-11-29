@@ -6,7 +6,7 @@ import ziotest.domain.auth._
 import ziotest.domain.errors.DatabaseError
 import ziotest.capabilities.database.Database._
 import ziotest.capabilities.database._
-import ziotest.repository.AuthRepository
+import ziotest.repository.AuthRepository.AuthRepository
 import doobie.util.query.Query0
 import doobie.syntax.all._
 import doobie.util.Read
@@ -15,7 +15,7 @@ import zio.interop.catz._
 
 final case class AuthRepositoryDoobie(
   tx: Transactor[Task]
-) extends AuthRepository:
+) extends AuthRepository.Service:
 
   def getClientCredentials: Task[ClientCredentials] =
     val action =
@@ -30,8 +30,8 @@ final case class AuthRepositoryDoobie(
 
 object AuthRepositoryDoobie:
 
-  val layer: URLayer[Database] =
-    (AuthRepositoryDoobie(_)).toLayer
+  val live: ZLayer[Database, Throwable, AuthRepository] =
+    ZLayer.fromEffect(Database.transactor.map(AuthRepositoryDoobie(_)))
 
   object SqlQueries:
 
