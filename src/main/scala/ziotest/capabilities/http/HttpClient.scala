@@ -1,4 +1,4 @@
-package ziotest.capabilites.http
+package ziotest.capabilities.http
 
 import io.circe.{Decoder, Encoder}
 import zio.{RIO, Has, Task}

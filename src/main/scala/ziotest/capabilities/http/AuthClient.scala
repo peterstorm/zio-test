@@ -1,4 +1,4 @@
-package ziotest.capabilites.http
+package ziotest.capabilities.http
 
 import ziotest.domain.auth.ClientCredentials
 

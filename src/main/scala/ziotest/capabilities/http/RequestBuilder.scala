@@ -1,7 +1,6 @@
-package ziotest.capabilites.http
+package ziotest.capabilities.http
 
 import org.http4s._
-
 
 case class RequestBuilder[A](
   url: String,
