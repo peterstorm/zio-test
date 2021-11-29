@@ -1,6 +1,7 @@
 val Scala3Version = "3.0.2"
 val CatsEffectVersion = "3.2.3"
 val CatsVersion = "2.6.1"
+val CatsParseVersion = "0.3.4"
 val CirceVersion = "0.14.1"
 val Fs2Version = "3.1.1"
 val Http4sVersion = "1.0.0-M24"
@@ -42,6 +43,7 @@ lazy val root = project
       "dev.zio" %% "zio-logging-slf4j" % ZioLogging,
       "org.typelevel" %% "cats-core" % CatsVersion,
       "org.typelevel" %% "cats-effect" % CatsEffectVersion,
+      "org.typelevel" %% "cats-parse" % CatsParseVersion,
       "io.circe" %% "circe-core" % CirceVersion,
       "io.circe" %% "circe-extras" % CirceVersion,
       "io.circe" %% "circe-generic" % CirceVersion,
