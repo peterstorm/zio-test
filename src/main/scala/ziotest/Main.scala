@@ -30,3 +30,6 @@ object Main extends zio.App:
           .toManagedZIO
       }
 
+  def run(args: List[String]): URIO[ZEnv, ExitCode] =
+    ZIO.succeed(println("hello world")).exitCode
+

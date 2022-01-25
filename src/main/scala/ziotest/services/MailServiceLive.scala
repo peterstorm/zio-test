@@ -1,6 +1,5 @@
 package ziotest.services
 
-import ziotest.service.MailService
 import ziotest.repository.MailRepository.MailRepository
 import ziotest.repository.MailRepository
 import zio.{Has, RIO, Task, ZLayer, URLayer}

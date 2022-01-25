@@ -12,38 +12,38 @@ import doobie.util.update.Update0
 import doobie.syntax.all._
 import zio.interop.catz._
 import java.time.format.DateTimeFormatter
-import MailRepositoryDoobie.SqlQueries
+import MailRepositoryDoobie.SQLQueries
 
 final case class MailRepositoryDoobie(
   tx: Transactor[Task]
 ) extends MailRepository.Service:
 
   def getMailMessages: Task[List[MailMessage]] =
-    SqlQueries
+    SQLQueries
       .getMailMessagesSQL
       .to[List]
       .transact(tx)
       .mapError(err => DatabaseError(err.getMessage))
 
   def getMailContent(mailMessage: MailMessage): Task[List[MailContent]] =
-    SqlQueries
+    SQLQueries
       .getMailContentSQL(mailMessage)
       .to[List]
       .transact(tx)
       .mapError(err => DatabaseError(err.getMessage))
 
-  def commitMailMessagesSent(mailMessage: MailMessage, requestId: String): Task[Unit] =
+  def commitMailMessageSent(mailMessage: MailMessage, requestId: String): Task[Unit] =
     val action =
       for
-        _ <- SqlQueries.deleteMailMessageSQL(mailMessage).run
-        _ <- SqlQueries.insertMailMessageSentSQL(mailMessage, requestId).run
+        _ <- SQLQueries.deleteMailMessageSQL(mailMessage).run
+        _ <- SQLQueries.insertMailMessageSentSQL(mailMessage, requestId).run
       yield ()
     action
       .transact(tx)
       .mapError(err => DatabaseError(err.getMessage))
 
   def setMailMessageError(mailMessage: MailMessage, error: String): Task[Unit] =
-    SqlQueries
+    SQLQueries
       .setMailMessageErrorSQL(mailMessage, error)
       .run
       .transact(tx)
@@ -55,7 +55,7 @@ object MailRepositoryDoobie:
   val live: ZLayer[Database, Throwable, MailRepository] =
     ZLayer.fromEffect(Database.transactor.map(MailRepositoryDoobie(_)))
 
-  object SqlQueries:
+  object SQLQueries:
 
     val receivedDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
     val date = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")

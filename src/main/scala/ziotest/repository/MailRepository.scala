@@ -24,7 +24,7 @@ object MailRepository:
     RIO.accessM(_.get.getMailContent(mailMessage))
 
   def commitMailMessageSent(mailMessage: MailMessage, requestId: String): RIO[MailRepository, Unit] = 
-    RIO.accessM(_.get.commitMailMessagesSent(mailMessage, requestId))
+    RIO.accessM(_.get.commitMailMessageSent(mailMessage, requestId))
 
   def setMailMessageError(mailMessage: MailMessage, error: String): RIO[MailRepository, Unit] = 
     RIO.accessM(_.get.setMailMessageError(mailMessage, error))
